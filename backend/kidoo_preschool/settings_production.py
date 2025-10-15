@@ -11,19 +11,26 @@ DEBUG = False
 
 # Security settings
 SECRET_KEY = config('SECRET_KEY')
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='kidoo-backend-5.onrender.com,localhost,127.0.0.1').split(',')
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='kidoo-backend-6.onrender.com,localhost,127.0.0.1').split(',')
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://kidoo-backend-6.onrender.com',
+    'https://kidoostatic.vercel.app'
+]
+
 
 # Database - Use PostgreSQL for production (Render.com free tier)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_NAME'),
-        'USER': config('DB_USER'),
-        'PASSWORD': config('DB_PASSWORD'),
-        'HOST': config('DB_HOST', default='localhost'),
-        'PORT': config('DB_PORT', default='5432'),
+        'NAME': 'kidoo',
+        'USER': 'kidoo_user',
+        'PASSWORD': '',
+        'HOST': 'dpg-d3nkd8ruibrs738g02p0-a',
+        'PORT': '5432',
     }
 }
+
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
@@ -62,23 +69,27 @@ SECURE_HSTS_PRELOAD = True
 # CORS settings for production
 # CORS_ALLOWED_ORIGINS = config('CORS_ALLOWED_ORIGINS', default='kidoo-backend-4.onrender.com,https://kidoostatic.vercel.app,http://localhost:3000,http://127.0.0.1:3000,').split(',')
 # CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = config(
-    'CORS_ALLOWED_ORIGINS',
-    default=''
-).split(',')
-render_hostname = os.environ.get("RENDER_EXTERNAL_HOSTNAME")
-if render_hostname:
-    ALLOWED_HOSTS.append(render_hostname)
-
-print("🚀 ALLOWED_HOSTS =", ALLOWED_HOSTS) 
-
-
-CSRF_TRUSTED_ORIGINS = [
- f"https://{render_hostname}" if render_hostname else "",
-    'https://kidoostatic.vercel.app',
+# CORS_ALLOWED_ORIGINS = config(
+#     'CORS_ALLOWED_ORIGINS',
+#     default=''
+# ).split(',')
+CORS_ALLOWED_ORIGINS = [
+    'https://kidoostatic.vercel.app',  # your frontend
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
 ]
+
+
+
+
 CORS_ALLOW_CREDENTIALS = True
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'kidoo-backend-5.onrender.com']
+ALLOWED_HOSTS = [
+    'kidoo-backend-6.onrender.com',  # your current Render hostname
+    'localhost',
+    '127.0.0.1',
+    '0.0.0.0',  # internal Render requests
+]
+
 
 
 # Logging

@@ -15,23 +15,23 @@ try:
     DEBUG = config('DEBUG', default=True, cast=bool)
     
     # Database configuration from environment variables
-    DB_HOST = config('DB_HOST', default='localhost')
-    DB_PORT = config('DB_PORT', default='1433')
-    DB_NAME = config('DB_NAME', default='KIDOO')
-    DB_USER = config('DB_USER', default='')
+    DB_HOST = config('DB_HOST', default='dpg-d3nkd8ruibrs738g02p0-a')
+    DB_PORT = config('DB_PORT', default='5432')
+    DB_NAME = config('DB_NAME', default='kidoo')
+    DB_USER = config('DB_USER', default='kidoo_user')
     DB_PASSWORD = config('DB_PASSWORD', default='')
-    USE_SQLSERVER = config('USE_SQLSERVER', default=False, cast=bool)
+    USE_POSTGRESQL = config('USE_POSTGRESQL', default=False, cast=bool)
 except:
     SECRET_KEY = 'django-insecure-change-this-in-production-kidoo-preschool-2024'
     DEBUG = True
-    DB_HOST = 'localhost'
-    DB_PORT = '1433'
-    DB_NAME = 'KIDOO'
-    DB_USER = ''
+    DB_HOST = 'dpg-d3nkd8ruibrs738g02p0-a'
+    DB_PORT = '5432'
+    DB_NAME = 'kidoo'
+    DB_USER = 'kidoo_user'
     DB_PASSWORD = ''
-    USE_SQLSERVER = False
+    USE_POSTGRESQL = False
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0','https://kidoo-backend-5.onrender.com']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0','https://kidoo-backend-6.onrender.com']
 
 # Application definition
 INSTALLED_APPS = [
@@ -79,25 +79,37 @@ TEMPLATES = [
 WSGI_APPLICATION = 'kidoo_preschool.wsgi.application'
 
 # Database
-if USE_SQLSERVER:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'mssql',
-            'NAME': 'KIDOO',               # Database name
-            'USER': '',               # SQL Server username
-            'PASSWORD': '',       # SQL Server password
-            'HOST': 'localhost\\SQLEXPRESS',               # e.g., 'localhost\\SQLEXPRESS'
-            'PORT': '',                    # Leave empty for named instances
-            'OPTIONS': {
-                'driver': 'SQL Server Native Client 11.0',  # Make sure this driver is installed
-                'extra_params': 'Trusted_Connection=yes;Server=localhost\\SQLEXPRESS;Database=KIDOO;'
-            },
-        },
-        'sqlite': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
+if USE_POSTGRESQL:
+      DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'kidoo',
+        'USER': 'kidoo_user',
+        'PASSWORD': 'your-postgres-password-here',
+        'HOST': 'dpg-d3nkd8ruibrs738g02p0-a',
+        'PORT': '5432',
     }
+}
+
+    # DATABASES = {
+    #     'default': {
+    #         'ENGINE': 'mssql',
+    #         'NAME': 'KIDOO',               # Database name
+    #         'USER': '',               # SQL Server username
+    #         'PASSWORD': '',       # SQL Server password
+    #         'HOST': 'localhost\\SQLEXPRESS',               # e.g., 'localhost\\SQLEXPRESS'
+    #         'PORT': '',                    # Leave empty for named instances
+    #         'OPTIONS': {
+    #             'driver': 'SQL Server Native Client 11.0',  # Make sure this driver is installed
+    #             'extra_params': 'Trusted_Connection=yes;Server=localhost\\SQLEXPRESS;Database=KIDOO;'
+    #         },
+    #     },
+    #     'sqlite': {
+    #         'ENGINE': 'django.db.backends.sqlite3',
+    #         'NAME': BASE_DIR / 'db.sqlite3',
+    #     }
+    # }
+
 else:
     DATABASES = {
         'default': {
@@ -152,6 +164,7 @@ REST_FRAMEWORK = {
 
 # CORS settings
 CORS_ALLOWED_ORIGINS = [
+    'https://kidoostatic.vercel.app', 
     "http://localhost:3000",
     "http://127.0.0.1:3000",
 ]
