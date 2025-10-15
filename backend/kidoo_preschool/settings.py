@@ -31,7 +31,7 @@ except:
     DB_PASSWORD = ''
     USE_SQLSERVER = False
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0','https://kidoo-backend-4.onrender.com']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0','https://kidoo-backend-5.onrender.com']
 
 # Application definition
 INSTALLED_APPS = [
