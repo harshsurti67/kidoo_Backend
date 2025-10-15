@@ -177,6 +177,7 @@ Includes CORS, CSRF, WhiteNoise, and email configuration.
 
 from pathlib import Path
 import os
+import cloudinary
 
 # -----------------------------
 # BASE DIR
@@ -232,19 +233,22 @@ INSTALLED_APPS = [
     'cloudinary',
     'cloudinary_storage',
 ]
-# Use Cloudinary for media storage
+"""Cloudinary configuration (hardcoded, per user request)
+WARNING: Secrets are embedded in source. Prefer environment variables in production.
+"""
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-
-# Optional: base media URL (Cloudinary overrides this)
-MEDIA_URL = '/media/'
-
-# Configure Cloudinary using environment variables
-# Set these in Render: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME', ''),
-    'API_KEY': os.environ.get('CLOUDINARY_API_KEY', ''),
-    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET', ''),
+    'CLOUD_NAME': 'diadyznqa',
+    'API_KEY': '643916278533495',
+    'API_SECRET': 'mljiWucEv3eiH6wFlj2aJ2_M0lY',
 }
+
+# Ensure Cloudinary SDK is configured (some libs read directly from cloudinary.config)
+cloudinary.config(
+    cloud_name=CLOUDINARY_STORAGE['CLOUD_NAME'],
+    api_key=CLOUDINARY_STORAGE['API_KEY'],
+    api_secret=CLOUDINARY_STORAGE['API_SECRET']
+)
 
 # -----------------------------
 # MIDDLEWARE
