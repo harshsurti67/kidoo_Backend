@@ -60,8 +60,15 @@ SECURE_HSTS_PRELOAD = True
 # CSRF_COOKIE_SECURE = True
 
 # CORS settings for production
-CORS_ALLOWED_ORIGINS = config('CORS_ALLOWED_ORIGINS', default='kidoo-backend-4.onrender.com,https://kidoostatic.vercel.app,http://localhost:3000,http://127.0.0.1:3000,').split(',')
+# CORS_ALLOWED_ORIGINS = config('CORS_ALLOWED_ORIGINS', default='kidoo-backend-4.onrender.com,https://kidoostatic.vercel.app,http://localhost:3000,http://127.0.0.1:3000,').split(',')
+# CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = config(
+    'CORS_ALLOWED_ORIGINS',
+    default='https://kidoo-backend-4.onrender.com,https://kidoostatic.vercel.app,http://localhost:3000,http://127.0.0.1:3000'
+).split(',')
+
 CORS_ALLOW_CREDENTIALS = True
+
 
 # Logging
 LOGGING = {
