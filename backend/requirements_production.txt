@@ -1,0 +1,38 @@
+# Core Django
+Django==4.2.7
+djangorestframework==3.14.0
+django-cors-headers==4.3.1
+django-filter==23.3
+
+# Database - SQL Server
+mssql-django==1.4
+pyodbc==4.0.39
+
+# Image processing
+Pillow>=10.0.0
+
+# Environment variables
+python-decouple==3.8
+
+# Static files serving
+whitenoise==6.6.0
+
+# Caching
+django-redis==5.4.0
+redis==5.0.1
+
+# Production server
+gunicorn==21.2.0
+
+# Monitoring and logging
+sentry-sdk[django]==1.38.0
+
+# Security
+django-security==0.20.0
+
+# Performance
+django-debug-toolbar==4.2.0  # Only for staging
+
+# Optional: For advanced features
+celery==5.3.4
+django-celery-beat==2.5.0
