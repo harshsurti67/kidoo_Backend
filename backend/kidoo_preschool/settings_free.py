@@ -13,7 +13,7 @@ DEBUG = False
 
 # Security settings
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-change-this-in-production-kidoo-preschool-2024')
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='').split(',')
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='kidoo-backend-4.onrender.com,localhost,127.0.0.1').split(',')
 
 # Database - Use SQL Server for free hosting
 DATABASES = {
