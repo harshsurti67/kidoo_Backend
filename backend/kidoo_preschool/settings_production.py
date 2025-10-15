@@ -13,19 +13,15 @@ DEBUG = False
 SECRET_KEY = config('SECRET_KEY')
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='').split(',')
 
-# Database - Use SQL Server for production
+# Database - Use PostgreSQL for production (Render.com free tier)
 DATABASES = {
     'default': {
-        'ENGINE': 'mssql',
-        'NAME': config('DB_NAME', default='KIDOO'),
-        'USER': config('DB_USER', default=''),
-        'PASSWORD': config('DB_PASSWORD', default=''),
-        'HOST': config('DB_HOST', default='localhost\\SQLEXPRESS'),
-        'PORT': config('DB_PORT', default=''),
-        'OPTIONS': {
-            'driver': 'SQL Server Native Client 11.0',
-            'extra_params': 'Trusted_Connection=yes;Server=localhost\\SQLEXPRESS;Database=KIDOO;'
-        },
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST', default='localhost'),
+        'PORT': config('DB_PORT', default='5432'),
     }
 }
 
