@@ -1,23 +1,10 @@
-# Core Django
+# Essential packages only - no conflicts
 Django==4.2.7
 djangorestframework==3.14.0
 django-cors-headers==4.3.1
 django-filter==23.3
-
-# Database - PostgreSQL
 psycopg2-binary==2.9.9
-
-# Image processing
 Pillow>=10.0.0
-
-# Environment variables
 python-decouple==3.8
-
-# Static files serving
 whitenoise==6.6.0
-
-# Production server
 gunicorn==21.2.0
-
-# Monitoring and logging
-sentry-sdk[django]==1.38.0
