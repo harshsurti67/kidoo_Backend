@@ -64,15 +64,21 @@ SECURE_HSTS_PRELOAD = True
 # CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = config(
     'CORS_ALLOWED_ORIGINS',
-    default='https://kidoostatic.vercel.app,http://localhost:3000,http://127.0.0.1:3000'
+    default=''
 ).split(',')
+render_hostname = os.environ.get("RENDER_EXTERNAL_HOSTNAME")
+if render_hostname:
+    ALLOWED_HOSTS.append(render_hostname)
+
+print("🚀 ALLOWED_HOSTS =", ALLOWED_HOSTS) 
 
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://kidoo-backend-5.onrender.com',
+ f"https://{render_hostname}" if render_hostname else "",
     'https://kidoostatic.vercel.app',
 ]
 CORS_ALLOW_CREDENTIALS = True
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'kidoo-backend-5.onrender.com']
 
 
 # Logging
