@@ -11,7 +11,7 @@ DEBUG = False
 
 # Security settings
 SECRET_KEY = config('SECRET_KEY')
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='').split(',')
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='kidoo-backend-4.onrender.com,localhost,127.0.0.1').split(',')
 
 # Database - Use PostgreSQL for production (Render.com free tier)
 DATABASES = {
@@ -64,9 +64,14 @@ SECURE_HSTS_PRELOAD = True
 # CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = config(
     'CORS_ALLOWED_ORIGINS',
-    default='https://kidoo-backend-4.onrender.com,https://kidoostatic.vercel.app,http://localhost:3000,http://127.0.0.1:3000'
+    default='https://kidoostatic.vercel.app,http://localhost:3000,http://127.0.0.1:3000'
 ).split(',')
 
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://kidoo-backend-4.onrender.com',
+    'https://kidoostatic.vercel.app',
+]
 CORS_ALLOW_CREDENTIALS = True
 
 
