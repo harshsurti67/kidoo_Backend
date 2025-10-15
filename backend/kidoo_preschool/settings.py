@@ -229,7 +229,22 @@ INSTALLED_APPS = [
     'corsheaders',
     'django_filters',
     'api',
+    'cloudinary',
+    'cloudinary_storage',
 ]
+# Use Cloudinary for media storage
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+# Optional: base media URL (Cloudinary overrides this)
+MEDIA_URL = '/media/'
+
+# Configure Cloudinary using environment variables
+# Set these in Render: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME', ''),
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY', ''),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET', ''),
+}
 
 # -----------------------------
 # MIDDLEWARE

@@ -1,11 +1,14 @@
 #!/usr/bin/env bash
 # Build script for Render.com deployment
 
-# Install dependencies
-pip install -r requirements_simple.txt
+set -euo pipefail
 
-# Change to backend directory
-cd backend
+# Always run from this script's directory (the backend folder)
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+cd "$SCRIPT_DIR"
+
+# Install dependencies (includes Cloudinary packages)
+pip install -r requirements_render.txt
 
 # Run migrations
 python manage.py migrate --noinput

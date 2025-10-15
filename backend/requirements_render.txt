@@ -21,3 +21,7 @@ gunicorn==21.2.0
 
 # Monitoring and logging
 sentry-sdk[django]==1.38.0
+
+# Media storage (Cloudinary)
+cloudinary==1.41.0
+django-cloudinary-storage==0.3.0

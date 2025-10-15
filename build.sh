@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
-# Build script for Render.com deployment
+# Build script for Render.com deployment (root wrapper)
 
-# Install dependencies
-pip install -r requirements.txt
+set -euo pipefail
 
-# Change to backend directory and run migrations
-cd backend
-python manage.py migrate --noinput
-python manage.py collectstatic --noinput
+# Ensure backend build script runs (installs backend/requirements_render.txt)
+chmod +x backend/build.sh
+backend/build.sh
