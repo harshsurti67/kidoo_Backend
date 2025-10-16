@@ -178,6 +178,10 @@ Includes CORS, CSRF, WhiteNoise, and email configuration.
 from pathlib import Path
 import os
 import cloudinary
+try:
+    import dj_database_url  # type: ignore
+except Exception:
+    dj_database_url = None  # Fallback if library not installed locally
 
 # -----------------------------
 # BASE DIR
@@ -288,7 +292,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'kidoo_preschool.wsgi.application'
 
 # -----------------------------
-# DATABASE (SQLite)
+# DATABASE (SQLite by default; auto-switch to PostgreSQL if DATABASE_URL set)
 # -----------------------------
 DATABASES = {
     'default': {
@@ -296,6 +300,16 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# If running on Render with PostgreSQL, use DATABASE_URL
+DATABASE_URL = os.getenv('DATABASE_URL')
+if DATABASE_URL and dj_database_url:
+    # conn_max_age keeps connections persistent; ssl required by Render
+    DATABASES['default'] = dj_database_url.config(
+        default=DATABASE_URL,
+        conn_max_age=600,
+        ssl_require=True,
+    )
 
 # -----------------------------
 # PASSWORD VALIDATION
