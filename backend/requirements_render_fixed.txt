@@ -1,18 +1,18 @@
+# Core Django
 Django==4.2.7
 djangorestframework==3.14.0
 django-cors-headers==4.3.1
-Pillow>=10.0.0
-python-decouple==3.8
 django-filter==23.3
-opencv-python>=4.8.0
 
-# Database - PostgreSQL (Production)
+# Database - PostgreSQL (Updated versions)
 psycopg2-binary==2.9.10
 dj-database-url==2.1.0
 
-# SQL Server database packages (Optional - for local development)
-mssql-django==1.4
-pyodbc==4.0.39
+# Image processing
+Pillow>=10.0.0
+
+# Environment variables
+python-decouple==3.8
 
 # Static files serving
 whitenoise==6.6.0
@@ -23,3 +23,6 @@ gunicorn==21.2.0
 # Media storage (Cloudinary)
 cloudinary==1.41.0
 django-cloudinary-storage==0.3.0
+
+# Additional dependencies for production
+python-dotenv==1.0.0
