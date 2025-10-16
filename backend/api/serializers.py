@@ -5,28 +5,27 @@ from .models import (
     AboutPage, AboutFeature, HomeSlider, HomeStats, Admission
 )
 def _normalize_media_url(url: str) -> str:
-    """Normalize URLs returned by storage so Cloudinary links are not double-prefixed.
-    Handles cases like '/media/https://res.cloudinary.com/...jpg' or
-    'https://res.cloudinary.com/.../image/upload/v1/media/https://res.cloudinary.com/...jpg'.
+    """Improved URL normalization for Cloudinary storage.
+    Handles various URL formats and prevents double-prefixing issues.
     """
     if not url:
         return url
-    # Strip leading /media/ when followed by an absolute URL
-    if url.startswith('/media/http'):
-        url = url[len('/media/'):]
-    # If Cloudinary has prefixed its delivery URL and then appended '/media/<absolute-url>',
-    # cut everything up to the start of the absolute URL
-    media_abs = '/media/http'
-    idx_media_abs = url.find(media_abs)
-    if idx_media_abs != -1:
-        url = url[idx_media_abs + len('/media/'):]
-    # If Cloudinary URL appears more than once, keep from the first occurrence
-    marker = 'https://res.cloudinary.com/'
-    first = url.find(marker)
-    if first != -1:
-        second = url.find(marker, first + len(marker))
-        if second != -1:
-            url = url[first:]
+    
+    # If it's already a complete Cloudinary URL, return as-is
+    if url.startswith('https://res.cloudinary.com/'):
+        return url
+    
+    # If it starts with /media/, remove it
+    if url.startswith('/media/'):
+        url = url[7:]  # Remove '/media/'
+    
+    # Handle cases where Cloudinary URL is embedded in path
+    cloudinary_marker = 'https://res.cloudinary.com/'
+    if cloudinary_marker in url:
+        start_idx = url.find(cloudinary_marker)
+        return url[start_idx:]
+    
+    # If it's a relative path, return as-is (Cloudinary will handle it)
     return url
 
 class ProgramSerializer(serializers.ModelSerializer):
@@ -37,12 +36,14 @@ class ProgramSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def get_image(self, obj):
-        if not obj.image:
-            return None
-        request = self.context.get('request')
-        url = obj.image.url
-        url = _normalize_media_url(url)
-        return request.build_absolute_uri(url) if request and not url.startswith('http') else url
+        if obj.image:
+            request = self.context.get('request')
+            url = obj.image.url
+            url = _normalize_media_url(url)
+            return request.build_absolute_uri(url) if request and not url.startswith('http') else url
+        else:
+            # Provide fallback image when no image is uploaded
+            return f"https://via.placeholder.com/400x300?text={obj.name.replace(' ', '+')}"
 
 
 class GallerySerializer(serializers.ModelSerializer):
@@ -62,6 +63,9 @@ class GallerySerializer(serializers.ModelSerializer):
             return url
         elif obj.type == 'video' and obj.video_url:
             return obj.video_url
+        elif obj.type == 'image':
+            # Provide fallback image when no image is uploaded
+            return f"https://via.placeholder.com/800x600?text={obj.title.replace(' ', '+')}"
         return None
 
 
