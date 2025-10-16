@@ -241,6 +241,8 @@ CLOUDINARY_STORAGE = {
     'CLOUD_NAME': 'diadyznqa',
     'API_KEY': '643916278533495',
     'API_SECRET': 'mljiWucEv3eiH6wFlj2aJ2_M0lY',
+    # Allow uploading images, videos, and other asset types
+    'RESOURCE_TYPE': 'auto',
 }
 
 # Ensure Cloudinary SDK is configured (some libs read directly from cloudinary.config)
