@@ -1,4 +1,5 @@
 from rest_framework import viewsets, status
+from rest_framework.permissions import AllowAny, IsAdminUser
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
@@ -73,6 +74,8 @@ class InquiryViewSet(viewsets.ModelViewSet):
     queryset = Inquiry.objects.all()
     serializer_class = InquirySerializer
     http_method_names = ['post']  # Only allow POST for creating inquiries
+
+    permission_classes = [AllowAny]
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -194,9 +197,12 @@ class AdmissionViewSet(viewsets.ModelViewSet):
     ordering_fields = ['submitted_at', 'student_first_name', 'student_last_name']
     ordering = ['-submitted_at']
     
+    def get_permissions(self):
+        # Public can create; only admins can list/retrieve/update/destroy
+        if self.action in ['create']:
+            return [AllowAny()]
+        return [IsAdminUser()]
+
     def get_queryset(self):
-        # For public submissions, only allow creating new applications
-        if self.action == 'create':
-            return Admission.objects.none()
-        # For admin access, return all applications
+        # Only admins may access queryset (enforced by permissions above)
         return super().get_queryset()
