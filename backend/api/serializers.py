@@ -14,6 +14,12 @@ def _normalize_media_url(url: str) -> str:
     # Strip leading /media/ when followed by an absolute URL
     if url.startswith('/media/http'):
         url = url[len('/media/'):]
+    # If Cloudinary has prefixed its delivery URL and then appended '/media/<absolute-url>',
+    # cut everything up to the start of the absolute URL
+    media_abs = '/media/http'
+    idx_media_abs = url.find(media_abs)
+    if idx_media_abs != -1:
+        url = url[idx_media_abs + len('/media/'):]
     # If Cloudinary URL appears more than once, keep from the first occurrence
     marker = 'https://res.cloudinary.com/'
     first = url.find(marker)
@@ -161,6 +167,7 @@ class AboutFeatureSerializer(serializers.ModelSerializer):
 class HomeSliderSerializer(serializers.ModelSerializer):
     media_url = serializers.SerializerMethodField()
     poster_url = serializers.SerializerMethodField()
+    image = serializers.SerializerMethodField()
     
     class Meta:
         model = HomeSlider
@@ -189,6 +196,16 @@ class HomeSliderSerializer(serializers.ModelSerializer):
             if request and not url.startswith('http'):
                 return request.build_absolute_uri(url)
             return url
+        return None
+
+    def get_image(self, obj):
+        if not obj.image:
+            return None
+        request = self.context.get('request')
+        url = _normalize_media_url(obj.image.url)
+        if request and not url.startswith('http'):
+            return request.build_absolute_uri(url)
+        return url
         return None
 
 
