@@ -4,7 +4,24 @@ from .models import (
     Inquiry, Blog, TeamMember, FAQ, Setting,
     AboutPage, AboutFeature, HomeSlider, HomeStats, Admission
 )
-
+def _normalize_media_url(url: str) -> str:
+    """Normalize URLs returned by storage so Cloudinary links are not double-prefixed.
+    Handles cases like '/media/https://res.cloudinary.com/...jpg' or
+    'https://res.cloudinary.com/.../image/upload/v1/media/https://res.cloudinary.com/...jpg'.
+    """
+    if not url:
+        return url
+    # Strip leading /media/ when followed by an absolute URL
+    if url.startswith('/media/http'):
+        url = url[len('/media/'):]
+    # If Cloudinary URL appears more than once, keep from the first occurrence
+    marker = 'https://res.cloudinary.com/'
+    first = url.find(marker)
+    if first != -1:
+        second = url.find(marker, first + len(marker))
+        if second != -1:
+            url = url[first:]
+    return url
 
 class ProgramSerializer(serializers.ModelSerializer):
     image = serializers.SerializerMethodField()
@@ -17,7 +34,9 @@ class ProgramSerializer(serializers.ModelSerializer):
         if not obj.image:
             return None
         request = self.context.get('request')
-        return request.build_absolute_uri(obj.image.url) if request else obj.image.url
+        url = obj.image.url
+        url = _normalize_media_url(url)
+        return request.build_absolute_uri(url) if request and not url.startswith('http') else url
 
 
 class GallerySerializer(serializers.ModelSerializer):
@@ -31,9 +50,10 @@ class GallerySerializer(serializers.ModelSerializer):
         """Return the appropriate URL based on type"""
         request = self.context.get('request')
         if obj.type == 'image' and obj.image:
-            if request:
-                return request.build_absolute_uri(obj.image.url)
-            return obj.image.url
+            url = _normalize_media_url(obj.image.url)
+            if request and not url.startswith('http'):
+                return request.build_absolute_uri(url)
+            return url
         elif obj.type == 'video' and obj.video_url:
             return obj.video_url
         return None
@@ -50,7 +70,8 @@ class TestimonialSerializer(serializers.ModelSerializer):
         if not obj.photo:
             return None
         request = self.context.get('request')
-        return request.build_absolute_uri(obj.photo.url) if request else obj.photo.url
+        url = _normalize_media_url(obj.photo.url)
+        return request.build_absolute_uri(url) if request and not url.startswith('http') else url
 
 
 class EventSerializer(serializers.ModelSerializer):
@@ -64,7 +85,8 @@ class EventSerializer(serializers.ModelSerializer):
         if not obj.image:
             return None
         request = self.context.get('request')
-        return request.build_absolute_uri(obj.image.url) if request else obj.image.url
+        url = _normalize_media_url(obj.image.url)
+        return request.build_absolute_uri(url) if request and not url.startswith('http') else url
 
 
 class BranchSerializer(serializers.ModelSerializer):
@@ -93,7 +115,8 @@ class BlogSerializer(serializers.ModelSerializer):
         if not obj.image:
             return None
         request = self.context.get('request')
-        return request.build_absolute_uri(obj.image.url) if request else obj.image.url
+        url = _normalize_media_url(obj.image.url)
+        return request.build_absolute_uri(url) if request and not url.startswith('http') else url
 
 
 class TeamMemberSerializer(serializers.ModelSerializer):
@@ -107,7 +130,8 @@ class TeamMemberSerializer(serializers.ModelSerializer):
         if not obj.photo:
             return None
         request = self.context.get('request')
-        return request.build_absolute_uri(obj.photo.url) if request else obj.photo.url
+        url = _normalize_media_url(obj.photo.url)
+        return request.build_absolute_uri(url) if request and not url.startswith('http') else url
 
 
 class FAQSerializer(serializers.ModelSerializer):
@@ -146,22 +170,25 @@ class HomeSliderSerializer(serializers.ModelSerializer):
         """Return the appropriate media URL based on media type"""
         request = self.context.get('request')
         if obj.media_type == 'image' and obj.image:
-            if request:
-                return request.build_absolute_uri(obj.image.url)
-            return obj.image.url
+            url = _normalize_media_url(obj.image.url)
+            if request and not url.startswith('http'):
+                return request.build_absolute_uri(url)
+            return url
         elif obj.media_type == 'video' and obj.video:
-            if request:
-                return request.build_absolute_uri(obj.video.url)
-            return obj.video.url
+            url = _normalize_media_url(obj.video.url)
+            if request and not url.startswith('http'):
+                return request.build_absolute_uri(url)
+            return url
         return None
     
     def get_poster_url(self, obj):
         """Return poster image URL for videos"""
         request = self.context.get('request')
         if obj.media_type == 'video' and obj.video_poster:
-            if request:
-                return request.build_absolute_uri(obj.video_poster.url)
-            return obj.video_poster.url
+            url = _normalize_media_url(obj.video_poster.url)
+            if request and not url.startswith('http'):
+                return request.build_absolute_uri(url)
+            return url
         return None
 
 
