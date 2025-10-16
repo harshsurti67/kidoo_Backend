@@ -1,10 +1,18 @@
 from django.core.management.base import BaseCommand
+from django.conf import settings
+import os
 from api.models import HomeSlider
 
 class Command(BaseCommand):
     help = 'Populates initial data for the Home Slider'
 
     def handle(self, *args, **kwargs):
+        # Hard safety: only allow when an explicit env flag is set
+        allow_seeding = os.getenv('DJANGO_ALLOW_SEEDING') == '1'
+        if not allow_seeding:
+            self.stdout.write(self.style.WARNING('Seeding blocked. Set DJANGO_ALLOW_SEEDING=1 to run.'))
+            return
+
         self.stdout.write(self.style.SUCCESS('Starting Home Slider data population...'))
 
         # Clear existing slider items to avoid duplicates if re-running

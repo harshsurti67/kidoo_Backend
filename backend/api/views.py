@@ -181,6 +181,13 @@ class HomeSliderViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = HomeSliderSerializer
     ordering = ['order', 'title']
 
+    def list(self, request, *args, **kwargs):
+        response = super().list(request, *args, **kwargs)
+        # Prevent stale caching by browsers/CDNs
+        response['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+        response['Pragma'] = 'no-cache'
+        return response
+
 
 class HomeStatsViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = HomeStats.objects.filter(is_active=True)
