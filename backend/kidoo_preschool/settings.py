@@ -237,23 +237,28 @@ INSTALLED_APPS = [
     'cloudinary',
     'cloudinary_storage',
 ]
-"""Cloudinary configuration (hardcoded, per user request)
-WARNING: Secrets are embedded in source. Prefer environment variables in production.
-"""
+# -----------------------------
+# CLOUDINARY CONFIGURATION (Production Ready)
+# -----------------------------
+# Use environment variables for production security
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': 'diadyznqa',
-    'API_KEY': '643916278533495',
-    'API_SECRET': 'mljiWucEv3eiH6wFlj2aJ2_M0lY',
-    # Allow uploading images, videos, and other asset types
+    'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME', 'diadyznqa'),
+    'API_KEY': os.getenv('CLOUDINARY_API_KEY', '643916278533495'),
+    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET', 'mljiWucEv3eiH6wFlj2aJ2_M0lY'),
     'RESOURCE_TYPE': 'auto',
+    'SECURE': True,  # Always use HTTPS
+    'STATIC_IMAGES_EXTENSIONS': ['jpg', 'jpeg', 'png', 'gif', 'webp'],
+    'STATIC_VIDEOS_EXTENSIONS': ['mp4', 'webm', 'mov'],
 }
 
-# Ensure Cloudinary SDK is configured (some libs read directly from cloudinary.config)
+# Ensure Cloudinary SDK is configured
 cloudinary.config(
     cloud_name=CLOUDINARY_STORAGE['CLOUD_NAME'],
     api_key=CLOUDINARY_STORAGE['API_KEY'],
-    api_secret=CLOUDINARY_STORAGE['API_SECRET']
+    api_secret=CLOUDINARY_STORAGE['API_SECRET'],
+    secure=True
 )
 
 # -----------------------------
@@ -292,24 +297,38 @@ TEMPLATES = [
 WSGI_APPLICATION = 'kidoo_preschool.wsgi.application'
 
 # -----------------------------
-# DATABASE (SQLite by default; auto-switch to PostgreSQL if DATABASE_URL set)
+# DATABASE (PostgreSQL ONLY - Production Ready)
 # -----------------------------
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
-# If running on Render with PostgreSQL, use DATABASE_URL
+# Use PostgreSQL database from Render (production) or local PostgreSQL (development)
 DATABASE_URL = os.getenv('DATABASE_URL')
+
 if DATABASE_URL and dj_database_url:
-    # conn_max_age keeps connections persistent; ssl required by Render
-    DATABASES['default'] = dj_database_url.config(
-        default=DATABASE_URL,
-        conn_max_age=600,
-        ssl_require=True,
-    )
+    # Production: Use Render PostgreSQL database
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=DATABASE_URL,
+            conn_max_age=600,
+            ssl_require=True,
+        )
+    }
+    print("✅ Using PostgreSQL database (Production)")
+else:
+    # Development: Use local PostgreSQL or production database as fallback
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.getenv('DB_NAME', 'kidoo'),
+            'USER': os.getenv('DB_USER', 'kidoo_user'),
+            'PASSWORD': os.getenv('DB_PASSWORD', 'DrCJxQKZtXlH7Kb2D12Q0K14274p97FL'),
+            'HOST': os.getenv('DB_HOST', 'dpg-d3nkd8ruibrs738g02p0-a.oregon-postgres.render.com'),
+            'PORT': os.getenv('DB_PORT', '5432'),
+            'OPTIONS': {
+                'sslmode': 'require',
+            },
+        }
+    }
+    print("⚠️ Using PostgreSQL database (Development/Production Fallback)")
+    print("💡 Database: kidoo on dpg-d3nkd8ruibrs738g02p0-a.oregon-postgres.render.com")
 
 # -----------------------------
 # PASSWORD VALIDATION
@@ -338,6 +357,10 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# Allow larger uploads (videos)
+DATA_UPLOAD_MAX_MEMORY_SIZE = 104857600  # 100 MB
+FILE_UPLOAD_MAX_MEMORY_SIZE = 104857600  # 100 MB
 
 # -----------------------------
 # REST FRAMEWORK

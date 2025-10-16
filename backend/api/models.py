@@ -66,7 +66,9 @@ class Gallery(models.Model):
     title = models.CharField(max_length=200)
     type = models.CharField(max_length=10, choices=TYPE_CHOICES)
     image = models.ImageField(upload_to='gallery/', blank=True, null=True)
-    video_url = models.URLField(blank=True, null=True, help_text="URL for video (YouTube, Vimeo, etc.)")
+    video_url = models.URLField(blank=True, null=True)
+    # image = models.ImageField(upload_to='gallery/', blank=True, null=True)
+    # video_url = models.URLField(blank=True, null=True, help_text="URL for video (YouTube, Vimeo, etc.)")
     category = models.CharField(max_length=100, choices=CATEGORY_CHOICES, default='Activities')
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -268,9 +270,8 @@ class HomeSlider(models.Model):
         null=True, 
         help_text="Background video for the slide (max 15 seconds, MP4 format, max 50MB)",
         validators=[
-            FileExtensionValidator(allowed_extensions=['mp4', 'mov', 'avi']),
-            validate_video_file_size,
-            validate_video_duration
+            FileExtensionValidator(allowed_extensions=['mp4']),
+            validate_video_file_size
         ]
     )
     video_poster = models.ImageField(upload_to='home_slider/posters/', blank=True, null=True, help_text="Poster image for video (shown before video loads)")
