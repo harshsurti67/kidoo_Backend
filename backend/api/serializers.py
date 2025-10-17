@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.conf import settings
 from .models import (
     Program, Gallery, Testimonial, Event, Branch, 
     Inquiry, Blog, TeamMember, FAQ, Setting,
@@ -41,9 +42,12 @@ class ProgramSerializer(serializers.ModelSerializer):
             url = obj.image.url
             url = _normalize_media_url(url)
             return request.build_absolute_uri(url) if request and not url.startswith('http') else url
-        else:
-            # Provide fallback image when no image is uploaded
-            return f"https://via.placeholder.com/400x300?text={obj.name.replace(' ', '+')}"
+        # Cloudinary placeholder (configurable)
+        placeholder = getattr(settings, 'CLOUDINARY_PLACEHOLDER_URL', None)
+        if placeholder:
+            return placeholder
+        # Final fallback
+        return f"https://via.placeholder.com/400x300?text={obj.name.replace(' ', '+')}"
 
 
 class GallerySerializer(serializers.ModelSerializer):
@@ -64,7 +68,11 @@ class GallerySerializer(serializers.ModelSerializer):
         elif obj.type == 'video' and obj.video_url:
             return obj.video_url
         elif obj.type == 'image':
-            # Provide fallback image when no image is uploaded
+            # Cloudinary placeholder (configurable)
+            placeholder = getattr(settings, 'CLOUDINARY_PLACEHOLDER_URL', None)
+            if placeholder:
+                return placeholder
+            # Provide generic fallback image when no image is uploaded
             return f"https://via.placeholder.com/800x600?text={obj.title.replace(' ', '+')}"
         return None
 

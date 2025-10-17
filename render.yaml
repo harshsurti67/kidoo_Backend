@@ -12,7 +12,7 @@ services:
       python manage.py migrate --noinput
     startCommand: |
       cd backend
-      gunicorn kidoo_preschool.wsgi:application
+      gunicorn kidoo_preschool.wsgi:application --timeout 300 --workers 2 --threads 2
     envVars:
       - key: SECRET_KEY
         generateValue: true

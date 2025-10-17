@@ -262,6 +262,14 @@ cloudinary.config(
 )
 
 # -----------------------------
+# CLOUDINARY PLACEHOLDER
+# -----------------------------
+# URL to a default placeholder image hosted on your Cloudinary account.
+# You can override via env var CLOUDINARY_PLACEHOLDER_URL to a real asset you upload,
+# e.g. 'https://res.cloudinary.com/<cloud>/image/upload/v<ver>/placeholders/default.jpg'
+CLOUDINARY_PLACEHOLDER_URL = os.getenv('CLOUDINARY_PLACEHOLDER_URL', '')
+
+# -----------------------------
 # MIDDLEWARE
 # -----------------------------
 MIDDLEWARE = [
@@ -363,6 +371,11 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # Allow larger uploads (videos)
 DATA_UPLOAD_MAX_MEMORY_SIZE = 104857600  # 100 MB
 FILE_UPLOAD_MAX_MEMORY_SIZE = 104857600  # 100 MB
+
+# Stream large uploads to temporary files (helps avoid memory spikes/timeouts)
+FILE_UPLOAD_HANDLERS = [
+    'django.core.files.uploadhandler.TemporaryFileUploadHandler',
+]
 
 # -----------------------------
 # REST FRAMEWORK
