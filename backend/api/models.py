@@ -165,9 +165,9 @@ class Blog(models.Model):
 
 
 class TeamMember(models.Model):
-    name = models.CharField(max_length=100)
-    role = models.CharField(max_length=100)
-    photo = models.ImageField(upload_to='team/')
+    name = models.CharField(max_length=150)
+    role = models.CharField(max_length=150)
+    photo = models.ImageField(upload_to='team/', max_length=500)
     bio = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 

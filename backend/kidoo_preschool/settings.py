@@ -311,7 +311,8 @@ if DATABASE_URL and dj_database_url:
             ssl_require=True,
         )
     }
-    print("✅ Using PostgreSQL database (Production)")
+    if os.getenv('NO_STARTUP_PRINTS') != '1':
+        print("Using PostgreSQL database (Production)")
 else:
     # Development: Use local PostgreSQL or production database as fallback
     DATABASES = {
@@ -327,8 +328,9 @@ else:
             },
         }
     }
-    print("⚠️ Using PostgreSQL database (Development/Production Fallback)")
-    print("💡 Database: kidoo on dpg-d3nkd8ruibrs738g02p0-a.oregon-postgres.render.com")
+    if os.getenv('NO_STARTUP_PRINTS') != '1':
+        print("Using PostgreSQL database (Development/Production Fallback)")
+        print("Database: kidoo on dpg-d3nkd8ruibrs738g02p0-a.oregon-postgres.render.com")
 
 # -----------------------------
 # PASSWORD VALIDATION
